@@ -1,0 +1,22 @@
+{
+  "checks": [
+    "Atlas: /preview/travel-explorer at 1440px",
+    "Atlas: /preview/travel-explorer at 375px",
+    "Fjord: /preview/nordic-living at 1440px",
+    "Fjord: /preview/nordic-living at 375px",
+    "Haven: /preview/haven-real-estate at 1440px",
+    "Haven: /preview/haven-real-estate at 375px",
+    "Bloom: /preview/bake-bloom at 1440px",
+    "Bloom: /preview/bake-bloom at 375px",
+    "Axle: /preview/autoparts-pro at 1440px",
+    "Axle: /preview/autoparts-pro at 375px",
+    "Layer: /preview/layer-poultry at 1440px",
+    "Layer: /preview/layer-poultry at 375px",
+    "Vista: /preview/car-booking at 1440px",
+    "Vista: /preview/car-booking at 375px",
+    "Ridge: /preview/roofing-pro at 1440px",
+    "Ridge: /preview/roofing-pro at 375px"
+  ],
+  "exceptions": [],
+  "consoleErrors": []
+}

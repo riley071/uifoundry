@@ -1,620 +1,455 @@
-const CarBooking = () => {
-  return (
-    <div className="min-h-screen bg-white text-slate-900">
-      {/* ========== NAVBAR ========== */}
-      <header className="sticky top-0 z-50 bg-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-lg bg-yellow-500 flex items-center justify-center">
-              <svg
-                className="w-5 h-5 text-slate-900"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
-              </svg>
-            </div>
-            <span className="font-bold text-lg">DriveGo</span>
-          </div>
+/**
+ * Car Booking — "VISTA"
+ * Premier, editorial car rental experience.
+ * Dark photographic hero, restrained accent, typographic hierarchy.
+ * React + Tailwind only. No extra deps.
+ */
+import { useState } from "react";
 
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-            <a href="#" className="hover:text-white transition">
-              Home
-            </a>
-            <a href="#" className="hover:text-white transition">
-              Cars
-            </a>
-            <a href="#" className="hover:text-white transition">
-              About
-            </a>
-            <a href="#" className="hover:text-white transition">
-              Services
-            </a>
-            <a href="#" className="hover:text-white transition">
-              Contact
-            </a>
+const cars = [
+  {
+    name: "Porsche 911 Carrera",
+    class: "Sport",
+    price: 289,
+    img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80",
+    specs: ["2 seats", "PDK", "Petrol"],
+  },
+  {
+    name: "Range Rover Autobiography",
+    class: "SUV",
+    price: 245,
+    img: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=900&q=80",
+    specs: ["5 seats", "Auto", "Hybrid"],
+  },
+  {
+    name: "Mercedes-AMG C 63",
+    class: "Sedan",
+    price: 198,
+    img: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=900&q=80",
+    specs: ["5 seats", "Auto", "Petrol"],
+  },
+  {
+    name: "BMW M4 Competition",
+    class: "Sport",
+    price: 265,
+    img: "https://images.unsplash.com/photo-1555215695-3004980adade?w=900&q=80",
+    specs: ["4 seats", "Auto", "Petrol"],
+  },
+  {
+    name: "Audi RS Q8",
+    class: "SUV",
+    price: 275,
+    img: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=900&q=80",
+    specs: ["5 seats", "Auto", "Petrol"],
+  },
+  {
+    name: "Tesla Model S Plaid",
+    class: "Electric",
+    price: 210,
+    img: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=900&q=80",
+    specs: ["5 seats", "Auto", "Electric"],
+  },
+];
+
+const CarBooking = () => {
+  const [trip, setTrip] = useState<"round" | "oneway">("round");
+  const [filter, setFilter] = useState("All");
+
+  const filters = ["All", "Sport", "SUV", "Sedan", "Electric"];
+  const visible =
+    filter === "All" ? cars : cars.filter((c) => c.class === filter);
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0b] text-white antialiased selection:bg-amber-400/30">
+      {/* ——— NAV ——— */}
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-[#0a0a0b]/70 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
+          <a href="#" className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/20 text-[11px] font-semibold tracking-[0.2em]">
+              V
+            </span>
+            <span className="text-sm font-semibold tracking-[0.18em]">VISTA</span>
+          </a>
+
+          <nav className="hidden items-center gap-8 text-[13px] text-white/55 md:flex" aria-label="Primary">
+            <a href="#fleet" className="transition hover:text-white">Fleet</a>
+            <a href="#how" className="transition hover:text-white">How it works</a>
+            <a href="#cities" className="transition hover:text-white">Cities</a>
+            <a href="#membership" className="transition hover:text-white">Membership</a>
           </nav>
 
-          <button className="px-5 py-2.5 rounded-lg bg-yellow-500 hover:bg-yellow-400 text-slate-900 text-sm font-semibold transition">
-            Sign In / Register
-          </button>
+          <div className="flex items-center gap-3">
+            <a href="#account" className="hidden text-[13px] text-white/55 transition hover:text-white sm:inline">
+              Sign in
+            </a>
+            <a
+              href="#book"
+              className="rounded-full bg-white px-4 py-2 text-[13px] font-semibold text-[#0a0a0b] transition hover:bg-white/90"
+            >
+              Reserve
+            </a>
+          </div>
         </div>
       </header>
 
-      {/* ========== HERO ========== */}
-      <section className="relative h-[600px] md:h-[680px] overflow-hidden">
+      {/* ——— HERO ——— */}
+      <section className="relative min-h-[100svh] pt-16">
         <img
-          src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1600&q=80"
-          alt="Luxury car"
-          className="absolute inset-0 w-full h-full object-cover"
+          src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1800&q=85"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/85 via-slate-900/60 to-slate-900/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0b]/50 via-[#0a0a0b]/40 to-[#0a0a0b]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0b]/80 via-transparent to-transparent" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 h-full flex flex-col justify-center">
-          <p className="text-yellow-400 text-sm font-semibold tracking-wider uppercase mb-3">
-            Premium Car Rental
+        <div className="relative mx-auto flex min-h-[calc(100svh-4rem)] max-w-7xl flex-col justify-end px-5 pb-16 pt-24 sm:px-8 lg:pb-24">
+          <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.28em] text-amber-300/90">
+            Private fleet · 18 cities
           </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white max-w-2xl leading-tight mb-5">
-            Drive Your Next Journey
+          <h1 className="max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+            The car arrives.
+            <br />
+            <span className="text-white/45">You disappear.</span>
           </h1>
-          <p className="text-slate-200 text-lg max-w-lg mb-8">
-            Book the perfect car for your next trip — affordable rates, premium
-            vehicles, and instant booking all in one place.
+          <p className="mt-6 max-w-md text-base leading-relaxed text-white/60">
+            Curated performance and luxury vehicles. Delivered to your door.
+            Returned without the desk.
           </p>
 
-          {/* Booking Form */}
-          <div className="bg-white rounded-2xl shadow-2xl p-4 max-w-4xl">
-            <div className="flex flex-wrap gap-2 mb-4">
-              {["Rent a Car", "Airport Transfer", "Long Term"].map((tab, i) => (
+          {/* Booking panel */}
+          <div
+            id="book"
+            className="mt-12 max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] p-1 backdrop-blur-xl"
+          >
+            <div className="flex gap-1 p-1">
+              {(
+                [
+                  ["round", "Round trip"],
+                  ["oneway", "One way"],
+                ] as const
+              ).map(([id, label]) => (
                 <button
-                  key={tab}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-                    i === 0
-                      ? "bg-yellow-500 text-slate-900"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  key={id}
+                  type="button"
+                  onClick={() => setTrip(id)}
+                  className={`rounded-xl px-4 py-2 text-xs font-medium transition ${
+                    trip === id
+                      ? "bg-white text-[#0a0a0b]"
+                      : "text-white/50 hover:text-white"
                   }`}
                 >
-                  {tab}
+                  {label}
                 </button>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-              <div className="lg:col-span-1">
-                <label className="text-xs text-slate-400 font-medium">
-                  Pick-up Location
+            <form
+              className="grid gap-px overflow-hidden rounded-xl bg-white/5 sm:grid-cols-2 lg:grid-cols-5"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              {[
+                { label: "Pick-up", placeholder: "City or airport" },
+                { label: "Drop-off", placeholder: trip === "round" ? "Same as pick-up" : "City or airport" },
+                { label: "From", placeholder: "Date · time" },
+                { label: "Until", placeholder: "Date · time" },
+              ].map((field) => (
+                <label key={field.label} className="bg-[#0a0a0b]/40 px-4 py-3.5">
+                  <span className="block text-[10px] font-medium uppercase tracking-wider text-white/35">
+                    {field.label}
+                  </span>
+                  <input
+                    type="text"
+                    placeholder={field.placeholder}
+                    className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
+                  />
                 </label>
-                <input
-                  type="text"
-                  placeholder="Select location"
-                  className="w-full mt-1 px-3 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-slate-400 font-medium">
-                  Drop-off Location
-                </label>
-                <input
-                  type="text"
-                  placeholder="Select location"
-                  className="w-full mt-1 px-3 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-slate-400 font-medium">
-                  Pick-up Date
-                </label>
-                <input
-                  type="text"
-                  placeholder="Select date"
-                  className="w-full mt-1 px-3 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-slate-400 font-medium">
-                  Drop-off Date
-                </label>
-                <input
-                  type="text"
-                  placeholder="Select date"
-                  className="w-full mt-1 px-3 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                />
-              </div>
-              <div className="flex items-end">
-                <button className="w-full py-2.5 rounded-lg bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-semibold text-sm transition">
-                  Search Cars
+              ))}
+              <div className="flex items-stretch bg-[#0a0a0b]/40 p-2 lg:p-2">
+                <button
+                  type="submit"
+                  className="w-full rounded-lg bg-amber-400 px-4 text-sm font-semibold text-[#0a0a0b] transition hover:bg-amber-300"
+                >
+                  Show cars
                 </button>
               </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* ——— TRUST STRIP ——— */}
+      <section className="border-y border-white/5">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-5 py-10 sm:grid-cols-4 sm:px-8">
+          {[
+            { k: "Door delivery", v: "Included in every city" },
+            { k: "No counters", v: "App unlock · walk away" },
+            { k: "Fully insured", v: "Comprehensive cover" },
+            { k: "Concierge", v: "24/7 human support" },
+          ].map((item) => (
+            <div key={item.k}>
+              <p className="text-sm font-medium text-white">{item.k}</p>
+              <p className="mt-1 text-xs text-white/40">{item.v}</p>
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* ========== TRUST BAR ========== */}
-      <section className="border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {[
-              { title: "No Hidden Fees", desc: "Transparent pricing always" },
-              { title: "24/7 Support", desc: "We're always there for you" },
-              { title: "Easy Booking", desc: "Book in minutes, not hours" },
-              {
-                title: "Fully Insured",
-                desc: "Drive with complete peace of mind",
-              },
-            ].map((item) => (
-              <div key={item.title}>
-                <p className="font-semibold text-slate-900 text-sm">
-                  {item.title}
-                </p>
-                <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ========== TOP BRANDS ========== */}
-      <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-slate-900">
-              Drive Your Favorite Brand
-            </h2>
-            <a
-              href="#"
-              className="text-yellow-600 text-sm font-medium hover:underline"
-            >
-              View All Brands →
-            </a>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 opacity-70">
-            {[
-              "Toyota",
-              "BMW",
-              "Mercedes",
-              "Audi",
-              "Honda",
-              "Ford",
-              "Chevrolet",
-              "Lexus",
-            ].map((brand) => (
-              <span
-                key={brand}
-                className="text-lg font-semibold text-slate-500 hover:text-slate-800 transition cursor-pointer"
-              >
-                {brand}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ========== CATEGORIES ========== */}
-      <section className="py-16 bg-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-2">
-              Choose Your Perfect Ride
-            </h2>
-            <p className="text-slate-400">
-              From economy to luxury, find the right car for every occasion and
-              budget
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {[
-              { name: "Economy Cars", icon: "🚗" },
-              { name: "SUVs", icon: "🚙" },
-              { name: "Luxury Cars", icon: "🏎️" },
-              { name: "Vans & MPVs", icon: "🚐" },
-              { name: "Sports Cars", icon: "🏁" },
-            ].map((cat) => (
-              <a
-                key={cat.name}
-                href="#"
-                className="flex flex-col items-center p-6 rounded-2xl bg-slate-800 hover:bg-slate-700 transition text-center"
-              >
-                <span className="text-3xl mb-3">{cat.icon}</span>
-                <span className="font-medium text-sm">{cat.name}</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ========== FEATURED CARS ========== */}
-      <section className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-end justify-between mb-10">
+      {/* ——— FLEET ——— */}
+      <section id="fleet" className="px-5 py-20 sm:px-8 lg:py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
-                Featured Cars
-              </h2>
-              <p className="text-slate-500 mt-1">
-                Handpicked vehicles for your comfort and style
+              <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-amber-300/80">
+                The fleet
               </p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+                Selected, not stocked
+              </h2>
             </div>
-            <a
-              href="#"
-              className="text-yellow-600 text-sm font-medium hover:underline hidden sm:block"
-            >
-              View All Cars →
-            </a>
+            <div className="flex flex-wrap gap-2">
+              {filters.map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setFilter(f)}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
+                    filter === f
+                      ? "bg-white text-[#0a0a0b]"
+                      : "border border-white/10 text-white/50 hover:border-white/25 hover:text-white"
+                  }`}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                name: "Toyota Corolla 2023",
-                type: "Economy",
-                price: "$45",
-                seats: 5,
-                trans: "Automatic",
-                img: "https://images.unsplash.com/photo-1623869675781-80aa31012a5a?w=600&q=80",
-              },
-              {
-                name: "BMW 5 Series 2024",
-                type: "Luxury",
-                price: "$89",
-                seats: 5,
-                trans: "Automatic",
-                img: "https://images.unsplash.com/photo-1555215695-3004980adade?w=600&q=80",
-              },
-              {
-                name: "Range Rover Sport 2024",
-                type: "SUV",
-                price: "$129",
-                seats: 5,
-                trans: "Automatic",
-                img: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=600&q=80",
-              },
-              {
-                name: "Mercedes C-Class 2023",
-                type: "Luxury",
-                price: "$95",
-                seats: 5,
-                trans: "Automatic",
-                img: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600&q=80",
-              },
-              {
-                name: "Ford Mustang 2022",
-                type: "Sports",
-                price: "$109",
-                seats: 4,
-                trans: "Manual",
-                img: "https://images.unsplash.com/photo-1584345604476-8ec5f82d545f?w=600&q=80",
-              },
-              {
-                name: "Toyota Hiace 2023",
-                type: "Van",
-                price: "$79",
-                seats: 12,
-                trans: "Automatic",
-                img: "https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=600&q=80",
-              },
-            ].map((car) => (
-              <div
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {visible.map((car) => (
+              <article
                 key={car.name}
-                className="group rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg transition bg-white"
+                className="group overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] transition hover:border-white/15"
               >
-                <div className="aspect-[16/10] overflow-hidden bg-slate-100">
+                <div className="relative aspect-[16/10] overflow-hidden bg-white/5">
                   <img
                     src={car.img}
                     alt={car.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
                   />
+                  <span className="absolute left-4 top-4 rounded-full bg-[#0a0a0b]/70 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-white/80 backdrop-blur">
+                    {car.class}
+                  </span>
                 </div>
                 <div className="p-5">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-700">
-                      {car.type}
-                    </span>
-                    <p className="font-bold text-lg text-slate-900">
-                      {car.price}
-                      <span className="text-sm font-normal text-slate-400">
-                        /day
-                      </span>
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-base font-semibold tracking-tight">{car.name}</h3>
+                    <p className="shrink-0 text-sm">
+                      <span className="font-semibold text-amber-300">${car.price}</span>
+                      <span className="text-white/35"> / day</span>
                     </p>
                   </div>
-                  <h3 className="font-semibold text-slate-900 mb-3">
-                    {car.name}
-                  </h3>
-                  <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
-                    <span>{car.seats} Seats</span>
-                    <span>·</span>
-                    <span>{car.trans}</span>
-                    <span>·</span>
-                    <span>A/C</span>
-                  </div>
-                  <button className="w-full py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium transition">
-                    Book Now
+                  <p className="mt-2 text-xs text-white/40">{car.specs.join(" · ")}</p>
+                  <button
+                    type="button"
+                    className="mt-5 w-full rounded-xl border border-white/10 py-2.5 text-sm font-medium text-white/80 transition hover:border-white/25 hover:bg-white/5 hover:text-white"
+                  >
+                    View details
                   </button>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ========== WHY US ========== */}
-      <section className="py-16 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-slate-900 mb-4">
-                More Than Just a Car Rental
-              </h2>
-              <p className="text-slate-600 mb-8 leading-relaxed">
-                At DriveGo, we make your journey smoother, safer, and more
-                enjoyable with trusted cars, transparent pricing, and
-                round-the-clock support.
-              </p>
-              <div className="grid grid-cols-2 gap-6">
-                {[
-                  {
-                    title: "Wide Selection",
-                    desc: "Hundreds of cars for every need",
-                  },
-                  {
-                    title: "Best Price Guarantee",
-                    desc: "Find the best rates, no hidden costs",
-                  },
-                  {
-                    title: "24/7 Support",
-                    desc: "We're always there, whenever you need us",
-                  },
-                  {
-                    title: "Easy Booking",
-                    desc: "Book online in just a few minutes",
-                  },
-                ].map((item) => (
-                  <div key={item.title}>
-                    <div className="w-10 h-10 rounded-xl bg-yellow-100 text-yellow-700 flex items-center justify-center mb-3">
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    </div>
-                    <h3 className="font-semibold text-slate-900 text-sm mb-1">
-                      {item.title}
-                    </h3>
-                    <p className="text-xs text-slate-500">{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
-              <img
-                src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80"
-                alt="Happy driver"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ——— HOW ——— */}
+      <section id="how" className="border-t border-white/5 bg-white/[0.02] px-5 py-20 sm:px-8 lg:py-28">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-amber-300/80">
+            How it works
+          </p>
+          <h2 className="mt-3 max-w-xl text-3xl font-semibold tracking-tight sm:text-4xl">
+            Three steps. Zero desk time.
+          </h2>
 
-      {/* ========== STATS ========== */}
-      <section className="py-12 bg-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <ol className="mt-14 grid gap-10 md:grid-cols-3">
             {[
-              { value: "25K+", label: "Happy Customers" },
-              { value: "50+", label: "Cities Worldwide" },
-              { value: "4.8/5", label: "Average Rating" },
-              { value: "24/7", label: "Customer Support" },
-            ].map((stat) => (
-              <div key={stat.label}>
-                <p className="text-3xl font-bold text-yellow-400">
-                  {stat.value}
-                </p>
-                <p className="text-sm text-slate-400 mt-1">{stat.label}</p>
-              </div>
+              {
+                n: "01",
+                t: "Choose the car",
+                d: "Filter by class, range, or occasion. Every vehicle is photographed and inspected before listing.",
+              },
+              {
+                n: "02",
+                t: "Set the window",
+                d: "Pick-up at your address or a city pin. Delivery windows run early morning to late evening.",
+              },
+              {
+                n: "03",
+                t: "Unlock and go",
+                d: "The key is digital. End the trip in the app — no return counter, no paper.",
+              },
+            ].map((step) => (
+              <li key={step.n} className="relative">
+                <span className="font-mono text-xs text-amber-300/70">{step.n}</span>
+                <h3 className="mt-3 text-lg font-semibold">{step.t}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/45">{step.d}</p>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
-      {/* ========== TESTIMONIALS ========== */}
-      <section className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
-              What Our Customers Say
-            </h2>
-            <p className="text-slate-500 mt-2">
-              Real experiences. Real people.
+      {/* ——— EDITORIAL SPLIT ——— */}
+      <section className="px-5 py-20 sm:px-8 lg:py-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2 lg:gap-20">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl sm:aspect-[5/6]">
+            <img
+              src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1000&q=85"
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b]/80 via-transparent to-transparent" />
+            <p className="absolute bottom-6 left-6 right-6 text-sm text-white/70">
+              Porsche 911 · delivered at 07:10 · Lisbon
             </p>
           </div>
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-amber-300/80">
+              Membership
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+              Drive more.
+              <br />
+              Decide less.
+            </h2>
+            <p className="mt-5 max-w-md text-sm leading-relaxed text-white/50">
+              Vista Members unlock priority delivery slots, waived young-driver fees,
+              and early access to limited editions. One annual fee. Cancel anytime.
+            </p>
+            <ul className="mt-8 space-y-3 text-sm text-white/70">
+              {[
+                "Priority delivery windows",
+                "Complimentary upgrades when available",
+                "Member rates on weekend peaks",
+              ].map((line) => (
+                <li key={line} className="flex gap-3">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-amber-300" />
+                  {line}
+                </li>
+              ))}
+            </ul>
+            <a
+              href="#membership"
+              className="mt-10 inline-flex rounded-full border border-white/20 px-5 py-2.5 text-sm font-medium transition hover:border-white/40 hover:bg-white/5"
+            >
+              View membership
+            </a>
+          </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* ——— CITIES ——— */}
+      <section id="cities" className="border-t border-white/5 px-5 py-20 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Active cities</h2>
+          <div className="mt-10 flex flex-wrap gap-3">
             {[
-              {
-                name: "James Carter",
-                place: "USA",
-                text: "The booking process was super easy, and the car was in perfect condition. Highly recommend!",
-              },
-              {
-                name: "Sophia Williams",
-                place: "UK",
-                text: "Great service, affordable prices, and excellent support. Will definitely use again.",
-              },
-              {
-                name: "Daniel Smith",
-                place: "Canada",
-                text: "Professional, reliable and no hidden fees. The best car rental experience I've had.",
-              },
-              {
-                name: "Emma Johnson",
-                place: "Australia",
-                text: "Clean cars, easy booking and amazing customer service. Highly recommended!",
-              },
-            ].map((t) => (
-              <div
-                key={t.name}
-                className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm"
+              "Lisbon",
+              "Porto",
+              "Madrid",
+              "Barcelona",
+              "Paris",
+              "Milan",
+              "Zurich",
+              "Amsterdam",
+              "Berlin",
+              "London",
+              "Dubai",
+              "Singapore",
+              "New York",
+              "Los Angeles",
+              "Miami",
+              "Toronto",
+              "Sydney",
+              "Tokyo",
+            ].map((city) => (
+              <span
+                key={city}
+                className="rounded-full border border-white/10 px-4 py-2 text-sm text-white/55 transition hover:border-white/25 hover:text-white"
               >
-                <div className="flex text-yellow-400 text-sm mb-3">★★★★★</div>
-                <p className="text-slate-600 text-sm mb-5 leading-relaxed">
-                  "{t.text}"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-yellow-100 text-yellow-700 flex items-center justify-center font-semibold text-sm">
-                    {t.name[0]}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-900 text-sm">
-                      {t.name}
-                    </p>
-                    <p className="text-xs text-slate-500">{t.place}</p>
-                  </div>
-                </div>
-              </div>
+                {city}
+              </span>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ========== SPECIAL OFFER ========== */}
-      <section className="py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="rounded-3xl overflow-hidden bg-slate-900 flex flex-col md:flex-row">
-            <div className="md:w-1/2 relative min-h-[240px]">
-              <img
-                src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80"
-                alt="Special offer"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            </div>
-            <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-              <p className="text-yellow-400 text-sm font-semibold tracking-wider uppercase mb-2">
-                Special Offer
-              </p>
-              <h2 className="text-3xl font-bold text-white mb-3">
-                Up to 40% OFF
-              </h2>
-              <p className="text-slate-300 mb-6">
-                Book now and save big on your next adventure. Limited time
-                offer.
-              </p>
-              <button className="self-start px-6 py-3 rounded-lg bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-semibold transition">
-                View Deals
-              </button>
-            </div>
-          </div>
+      {/* ——— QUOTE ——— */}
+      <section className="px-5 py-20 sm:px-8 lg:py-28">
+        <div className="mx-auto max-w-3xl text-center">
+          <blockquote className="text-2xl font-medium leading-snug tracking-tight text-white/90 sm:text-3xl">
+            “The car was outside the hotel before my coffee arrived. That was the whole product.”
+          </blockquote>
+          <p className="mt-8 text-sm text-white/40">— Member review · Barcelona</p>
         </div>
       </section>
 
-      {/* ========== FOOTER ========== */}
-      <footer className="bg-slate-950 text-white pt-16 pb-8 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-9 h-9 rounded-lg bg-yellow-500 flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 text-slate-900"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z" />
-                  </svg>
-                </div>
-                <span className="font-bold text-lg">DriveGo</span>
-              </div>
-              <p className="text-slate-400 text-sm leading-relaxed">
-                Your trusted partner for car rentals worldwide.
-              </p>
-            </div>
+      {/* ——— FINAL CTA ——— */}
+      <section className="px-5 pb-24 sm:px-8">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-transparent px-8 py-16 text-center sm:px-16">
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            Ready when you are
+          </h2>
+          <p className="mx-auto mt-4 max-w-md text-sm text-white/45">
+            Browse the fleet, set a delivery window, and unlock from your phone.
+          </p>
+          <a
+            href="#book"
+            className="mt-8 inline-flex rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-[#0a0a0b] transition hover:bg-amber-300"
+          >
+            Reserve a car
+          </a>
+        </div>
+      </section>
 
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Cars
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Services
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Terms & Conditions
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Cancellation Policy
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Contact Us</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li>+1 (800) 123-4567</li>
-                <li>support@drivego.com</li>
-                <li>New York, USA</li>
-              </ul>
-            </div>
+      {/* ——— FOOTER ——— */}
+      <footer className="border-t border-white/5 px-5 py-14 sm:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-10 lg:flex-row lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold tracking-[0.18em]">VISTA</p>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/35">
+              Private fleet rental. Delivered. App-unlocked. Returned without the desk.
+            </p>
           </div>
-
-          <div className="border-t border-slate-800 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-slate-500">
-            <p>© 2026 DriveGo. All rights reserved.</p>
-            <div className="flex gap-4 text-xs">
-              <span className="px-2 py-1 border border-slate-700 rounded">
-                Visa
-              </span>
-              <span className="px-2 py-1 border border-slate-700 rounded">
-                Mastercard
-              </span>
-              <span className="px-2 py-1 border border-slate-700 rounded">
-                PayPal
-              </span>
+          <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-wider text-white/30">Product</p>
+              <ul className="mt-3 space-y-2 text-sm text-white/50">
+                <li><a href="#fleet" className="hover:text-white">Fleet</a></li>
+                <li><a href="#how" className="hover:text-white">How it works</a></li>
+                <li><a href="#membership" className="hover:text-white">Membership</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-wider text-white/30">Company</p>
+              <ul className="mt-3 space-y-2 text-sm text-white/50">
+                <li><a href="#cities" className="hover:text-white">Cities</a></li>
+                <li><a href="#careers" className="hover:text-white">Careers</a></li>
+                <li><a href="#press" className="hover:text-white">Press</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-wider text-white/30">Legal</p>
+              <ul className="mt-3 space-y-2 text-sm text-white/50">
+                <li><a href="#privacy" className="hover:text-white">Privacy</a></li>
+                <li><a href="#terms" className="hover:text-white">Terms</a></li>
+                <li><a href="#insurance" className="hover:text-white">Insurance</a></li>
+              </ul>
             </div>
           </div>
         </div>
+        <p className="mx-auto mt-12 max-w-7xl text-xs text-white/25">© 2026 Vista Mobility. Sample design for UIFoundry.</p>
       </footer>
     </div>
   );
