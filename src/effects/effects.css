@@ -1,0 +1,15 @@
+.effect-stage{position:relative;isolation:isolate;display:grid;place-items:center;overflow:hidden;height:290px;background:#080b16;touch-action:pan-y;--lean:0deg;--pointer-x:50%}
+.effect-letters{position:relative;display:flex;flex-wrap:wrap;justify-content:center;max-width:90%;font-weight:800;font-size:clamp(24px,3vw,42px);letter-spacing:-.05em;color:var(--effect-color);perspective:700px}
+.effect-letters span{display:inline-block;animation:effect-wave 3s ease-in-out infinite;animation-delay:calc(var(--i)*-90ms);transition:transform .35s;white-space:pre}
+.effect-stage:hover .effect-letters span{transform:rotateY(var(--lean)) translateY(calc(var(--i)*-1px))}
+.effect-glitch span{animation-name:effect-glitch;text-shadow:2px 0 #22d3ee,-2px 0 #f472b6}
+.effect-mist span{animation-name:effect-mist}
+.effect-orbit span{animation-name:effect-orbit}
+.effect-scatter span{animation-name:effect-wave}.effect-fired .effect-scatter span{animation:effect-scatter 1s ease-out both;animation-delay:calc(var(--i)*15ms)}
+.effect-paused *{animation-play-state:paused!important}
+@keyframes effect-wave{0%,100%{translate:0 0}50%{translate:0 -12px}}
+@keyframes effect-glitch{0%,85%,100%{translate:0 0;opacity:1}87%{translate:3px -2px;opacity:.4}92%{translate:-3px 0}}
+@keyframes effect-mist{0%,100%{filter:blur(0);opacity:1}50%{filter:blur(6px);opacity:.2;translate:0 -12px}}
+@keyframes effect-orbit{0%,100%{rotate:y -25deg}50%{rotate:y 30deg;translate:0 -8px}}
+@keyframes effect-scatter{0%,100%{translate:0 0;rotate:0deg;opacity:1}50%{translate:calc((var(--i) - 7)*12px) 70px;rotate:35deg;opacity:.1}}
+@media(prefers-reduced-motion:reduce){.effect-letters span{animation:none!important;transition:none!important}.effect-stage:hover .effect-letters span{transform:none}}

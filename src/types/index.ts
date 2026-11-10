@@ -7,8 +7,6 @@ export interface Design {
   description: string;
   previewImage: string;
   isPremium: boolean;
-  likes: number;
-  views: number;
   updatedAt: string;
   tags: string[];
 }
@@ -38,4 +36,28 @@ export type DesignSlug =
   | 'autoparts-pro'
   | 'layer-poultry'
   | 'car-booking'
-  | 'roofing-pro';
+  | 'roofing-pro'
+  | 'orbit-observatory'
+  | 'afterhours-festival'
+  | 'forma-museum'
+  | 'sprout-market'
+  | 'vault-finance'
+  | 'kin-running'
+  | 'lumen-studio'
+  | 'current-climate'
+  | 'serein-retreat'
+  | 'nova-developer'
+  | 'oakfield-academy'
+  | 'little-lantern-school'
+  | 'maison-elan-salon'
+  | 'chroma-hair-studio'
+  | 'struct-construction'
+  | 'brightside-cleaning'
+  | 'good-cut-barbers'
+  | 'crumb-and-co'
+  | 'ember-table'
+  | 'fieldwork-supply'
+  | 'verde-furniture'
+  | 'northline-property'
+  | 'meridian-hospital'
+  | 'ignition-motors';

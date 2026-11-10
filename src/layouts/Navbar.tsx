@@ -25,6 +25,7 @@ const AppNavbar = () => {
           <div className="hidden md:flex items-center gap-1">
             <NavLink to="/explore" className={linkClass}>Explore</NavLink>
             <NavLink to="/components" className={linkClass}>Components</NavLink>
+            <NavLink to="/components/backgrounds" className={linkClass}>Effects</NavLink>
             <NavLink to="/motion" className={linkClass}>Motion Lab</NavLink>
             <NavLink to="/pricing" className={linkClass}>Pricing</NavLink>
           </div>
@@ -58,6 +59,7 @@ const AppNavbar = () => {
             <div className="flex flex-col gap-1">
               <NavLink to="/explore" className={linkClass} onClick={() => setOpen(false)}>Explore</NavLink>
               <NavLink to="/components" className={linkClass} onClick={() => setOpen(false)}>Components</NavLink>
+              <NavLink to="/components/backgrounds" className={linkClass} onClick={() => setOpen(false)}>Effects</NavLink>
               <NavLink to="/motion" className={linkClass} onClick={() => setOpen(false)}>Motion Lab</NavLink>
               <NavLink to="/pricing" className={linkClass} onClick={() => setOpen(false)}>Pricing</NavLink>
               <div className="flex gap-2 mt-3 pt-3 border-t border-slate-100">

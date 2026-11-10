@@ -36,6 +36,7 @@ const DesignCard = ({ design }: { design: Design }) => {
       <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
         <img
           src={design.previewImage}
+          onError={event => { if (!event.currentTarget.dataset.fallback) { event.currentTarget.dataset.fallback = 'true'; event.currentTarget.src = `/${design.id.startsWith('creative-') ? 'templates' : 'business'}/${design.slug}.svg`; } }}
           alt={design.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -44,6 +45,7 @@ const DesignCard = ({ design }: { design: Design }) => {
             Premium
           </span>
         )}
+        {design.updatedAt === 'New' && <span className="absolute top-3 left-3 rounded-lg bg-lime-200 px-3 py-1 text-xs font-semibold text-slate-900 shadow-sm">New · Interactive</span>}
         <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[radial-gradient(circle_at_var(--gx,50%)_var(--gy,50%),rgba(255,255,255,0.28),transparent_55%)]" />
       </div>
       <div className="p-4">
@@ -64,7 +66,7 @@ const DesignCard = ({ design }: { design: Design }) => {
         </p>
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 text-xs text-slate-400">
           <span>
-            {design.likes} likes, {design.views.toLocaleString()} views
+            Live interactive preview
           </span>
           <span>{design.updatedAt}</span>
         </div>
@@ -107,9 +109,9 @@ const Explore = () => {
       return true;
     })
     .sort((a, b) => {
-      if (sortBy === "popular") return b.views - a.views;
-      if (sortBy === "liked") return b.likes - a.likes;
-      return 0;
+      if (sortBy === "name") return a.title.localeCompare(b.title);
+      if (sortBy === "category") return a.category.localeCompare(b.category);
+      return Number(b.updatedAt === 'New') - Number(a.updatedAt === 'New');
     });
 
   const hasFilters =
@@ -138,6 +140,7 @@ const Explore = () => {
             Full websites with live previews. Filter by category or style, then
             open one to test it at any screen width.
           </p>
+          <p className="mb-6 inline-flex rounded-full border border-lime-300/30 bg-lime-300/10 px-4 py-2 text-xs text-lime-200">{designs.length} live designs · New schools, salons, trade, food, and shop templates</p>
           <div className="relative max-w-xl">
             <svg
               className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
@@ -270,8 +273,8 @@ const Explore = () => {
                   className="px-3 py-2 text-sm text-slate-800 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
                 >
                   <option value="newest">Newest</option>
-                  <option value="popular">Most popular</option>
-                  <option value="liked">Most liked</option>
+                  <option value="name">Name A?Z</option>
+                  <option value="category">Category</option>
                 </select>
               </label>
             </div>

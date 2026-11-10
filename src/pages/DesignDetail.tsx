@@ -1,6 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { designs } from '../data/designs';
+import { templateThemes } from '../designs/collection/themes';
+import { businessThemes, legacyPalettes } from '../designs/business/data';
+import { photoProfiles } from '../designs/photographic/profiles';
+
+const templateSources = import.meta.glob<string>(['../designs/photographic/*.{tsx,ts,css}', '../designs/collection/*.{tsx,ts,css}', '../designs/business/*.{tsx,ts,css}', '../designs/*.tsx', '../effects/*.{tsx,ts,css}', '../motion-native/*.{tsx,ts,css}', '../components-library/**/*.{tsx,ts}', '../index.css'], { query: '?raw', import: 'default' });
 
 type Viewport = 'desktop' | 'tablet' | 'mobile';
 
@@ -15,6 +20,27 @@ const DesignDetail = () => {
   const design = designs.find((d) => d.slug === slug) || designs[0];
   const [activeTab, setActiveTab] = useState('preview');
   const [viewport, setViewport] = useState<Viewport>('desktop');
+  const creativeTheme = templateThemes.find(item => item.slug === design.slug);
+  const businessTheme = businessThemes.find(item => item.slug === design.slug);
+  const photographic = photoProfiles.find(item => item.slug === design.slug);
+  const photoTheme = useMemo(() => photographic ? { name: photographic.name, slug: photographic.slug, layout: photographic.variant, bg: '#faf9f3', fg: photographic.ink, accent: photographic.accent, muted: '#747b70', text: 'Headline', cursor: 'Pointer' } : undefined, [photographic]);
+  const theme = creativeTheme ?? photoTheme ?? businessTheme ?? legacyPalettes.find(item => item.slug === design.slug);
+  const [source, setSource] = useState('');
+  const [copyStatus, setCopyStatus] = useState('');
+  useEffect(() => {
+    if (!theme || activeTab !== 'code') return;
+    let active = true;
+    setSource(''); setCopyStatus('');
+    Promise.all(Object.entries(templateSources).map(async ([path, read]) => `/* FILE: ${path} */\n${await read()}`)).then(files => {
+      if (active) setSource(`// ${theme.name} template and reusable library source\n// Save each FILE block separately in this project. Requires React 19, React Router, Three.js, and the project Tailwind configuration.\n// Preview route: /preview/${theme.slug}\n\n${files.join('\n\n')}`);
+    }).catch(() => { if (active) setCopyStatus('Source could not load. Reopen this tab to retry.'); });
+    return () => { active = false; };
+  }, [theme, activeTab]);
+  async function copyTemplateSource() {
+    if (!source) return;
+    try { await navigator.clipboard.writeText(source); setCopyStatus('Copied template and supporting files.'); }
+    catch { setCopyStatus('Clipboard unavailable. Select the source below and copy manually.'); }
+  }
 
   const tabs = [
     { id: 'preview', label: 'Live Preview' },
@@ -47,7 +73,7 @@ const DesignDetail = () => {
           </div>
           <p className="text-slate-600 max-w-2xl">{design.description}</p>
           <p className="text-sm text-slate-400 mt-2">
-            Updated {design.updatedAt} · ♥ {design.likes} · {design.views.toLocaleString()} views
+            {design.updatedAt} · Live interactive preview
           </p>
         </div>
 
@@ -63,7 +89,7 @@ const DesignDetail = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
           </a>
-          <button className="px-4 py-2.5 rounded-lg border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50 transition">
+          <button onClick={() => setActiveTab('code')} className="px-4 py-2.5 rounded-lg border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50 transition">
             Copy Code
           </button>
           <button className="px-4 py-2.5 rounded-lg border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50 transition">
@@ -150,17 +176,17 @@ const DesignDetail = () => {
       {activeTab === 'sections' && (
         <div className="space-y-2 max-w-3xl">
           <p className="text-slate-600 mb-4">
-            Click any section to view and copy its code. Full section implementations will appear here once the design is built.
+            {theme ? 'Explore the sections used in this template. View source to copy the implementation and its reusable components.' : 'Click any section to view and copy its code. Full section implementations will appear here once the design is built.'}
           </p>
-          {['Hero Section', 'Navigation', 'Features / Categories', 'Product / Destination Cards', 'Testimonials', 'CTA Banner', 'Footer'].map(
+          {(theme && !creativeTheme ? ['Navigation and responsive layout', 'Search and collection filters', 'Product, service, or programme collection', 'Booking, enquiry, or cart flow', 'Story, FAQ, and footer'] : theme ? ['Custom hero and illustration', 'Interactive offering collection', 'Brand story and data visualization', `${theme.text} lettering`, 'Playroom: UI, effects, and motion', `${theme.cursor} interaction`, 'Enquiry flow and footer'] : ['Hero Section', 'Navigation', 'Features / Categories', 'Product / Destination Cards', 'Testimonials', 'CTA Banner', 'Footer']).map(
             (section) => (
               <div
                 key={section}
                 className="flex items-center justify-between px-4 py-3.5 rounded-xl border border-slate-200 hover:border-brand-300 hover:bg-brand-50/30 transition"
               >
                 <span className="font-medium text-slate-800">{section}</span>
-                <button className="text-sm text-brand-600 font-medium hover:underline">
-                  Copy Code
+                <button onClick={() => setActiveTab('code')} className="text-sm text-brand-600 font-medium hover:underline">
+                  View source
                 </button>
               </div>
             )
@@ -173,13 +199,13 @@ const DesignDetail = () => {
           <div>
             <h4 className="font-semibold mb-4">Colors</h4>
             <div className="flex flex-wrap gap-4">
-              {[
+              {(theme ? [{ name: 'Canvas', hex: theme.bg }, { name: 'Ink', hex: theme.fg }, { name: 'Accent', hex: theme.accent }, { name: 'Muted', hex: theme.muted }] : [
                 { name: 'Primary', hex: '#4F46E5' },
                 { name: 'Secondary', hex: '#7C3AED' },
                 { name: 'Neutral 900', hex: '#0F172A' },
                 { name: 'Neutral 100', hex: '#F1F5F9' },
                 { name: 'Success', hex: '#10B981' },
-              ].map((c) => (
+              ]).map((c) => (
                 <div key={c.name} className="text-center">
                   <div
                     className="w-14 h-14 rounded-xl border border-slate-200 mb-1.5 shadow-sm"
@@ -194,8 +220,8 @@ const DesignDetail = () => {
           <div>
             <h4 className="font-semibold mb-4">Typography</h4>
             <div className="space-y-2 text-sm text-slate-600">
-              <p><span className="font-medium text-slate-800">Heading:</span> Inter / system-ui</p>
-              <p><span className="font-medium text-slate-800">Body:</span> Inter</p>
+              <p><span className="font-medium text-slate-800">Heading:</span> {theme ? ['museum', 'market', 'retreat', 'school', 'salon', 'bakery', 'barber', 'restaurant'].includes(theme.layout) ? 'Georgia / serif' : 'Arial / Helvetica' : 'Inter / system-ui'}</p>
+              <p><span className="font-medium text-slate-800">Body:</span> {theme ? 'Arial / Helvetica / sans-serif' : 'Inter'}</p>
               <p><span className="font-medium text-slate-800">Base size:</span> 16px</p>
               <p><span className="font-medium text-slate-800">Scale:</span> 1.25</p>
             </div>
@@ -209,12 +235,13 @@ const DesignDetail = () => {
             <p className="text-sm text-slate-500">
               Framework: React + Tailwind CSS
             </p>
-            <button className="text-sm font-medium text-brand-600 hover:underline">
-              Copy Full Page Code
+            <button disabled={Boolean(theme && !source)} onClick={copyTemplateSource} className="text-sm font-medium text-brand-600 hover:underline disabled:opacity-40">
+              {theme ? 'Copy template files' : 'Copy Full Page Code'}
             </button>
           </div>
-          <pre className="bg-slate-900 text-slate-100 rounded-xl p-5 text-sm overflow-x-auto leading-relaxed">
-{`// ${design.title} – React + Tailwind
+          {theme && <p role="status" className="mb-3 text-sm text-slate-500">{copyStatus || 'Complete source with supporting library files. Save each file block separately.'}</p>}
+          <pre tabIndex={0} className="bg-slate-900 text-slate-100 rounded-xl p-5 text-sm overflow-x-auto leading-relaxed max-h-[700px]">
+{theme ? source || 'Loading template source…' : `// ${design.title} – React + Tailwind
 // This is a skeleton. Full implementation coming soon.
 
 export default function ${design.title.replace(/[^a-zA-Z]/g, '')}() {

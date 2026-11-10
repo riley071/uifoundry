@@ -9,6 +9,8 @@ import Pricing from './pages/Pricing';
 import Preview from './pages/Preview';
 
 const Components = lazy(() => import('./pages/Components'));
+const Effects = lazy(() => import('./pages/Effects'));
+const MotionStudio = lazy(() => import('./pages/MotionStudio'));
 const ComponentPreview = lazy(() => import('./pages/ComponentPreview'));
 
 function App() {
@@ -25,7 +27,9 @@ function App() {
           <Route path="/explore" element={<Explore />} />
           <Route path="/design/:slug" element={<DesignDetail />} />
           <Route path="/components" element={<Suspense fallback={<p role="status" className="mx-auto max-w-7xl px-6 py-16 text-slate-600">Loading the component catalog…</p>}><Components /></Suspense>} />
+          <Route path="/components/:category" element={<Suspense fallback={<p role="status" className="p-6">Loading effects…</p>}><Effects /></Suspense>} />
           <Route path="/motion" element={<MotionLab />} />
+          <Route path="/motion/studio" element={<Suspense fallback={<p role="status" className="p-6">Loading Motion Studio…</p>}><MotionStudio /></Suspense>} />
           <Route path="/pricing" element={<Pricing />} />
         </Route>
       </Routes>

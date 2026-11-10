@@ -1,0 +1,25 @@
+import fs from 'node:fs';
+import ts from 'typescript';
+
+const source = ts.transpileModule(fs.readFileSync('src/designs/business/data.ts', 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
+const { businessThemes, legacyPalettes } = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
+const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+fs.mkdirSync('public/business', { recursive: true });
+for (const theme of [...businessThemes, ...legacyPalettes.map(item => ({ ...item, kind: 'legacy', category: 'Live preview', headline: 'Thoughtful design.\nWorking details.', action: 'Explore the collection' }))]) {
+  const { bg, fg, accent, kind } = theme;
+  let art = `<rect x="740" y="150" width="360" height="420" rx="${['school','primary','salon','bakery','barber'].includes(kind) ? 170 : 8}" fill="${accent}" opacity=".5"/>`;
+  if (['school', 'primary'].includes(kind)) art += `<path d="M790 270Q850 240 915 270V450Q850 420 790 450ZM915 270Q980 240 1040 270V450Q980 420 915 450Z" fill="${bg}" stroke="${fg}" stroke-width="3"/><text x="835" y="365" font-family="Georgia" font-size="65">Aa</text><text x="1000" y="240" font-size="85">✳</text>`;
+  else if (['salon','color-studio'].includes(kind)) art += `<ellipse cx="920" cy="320" rx="105" ry="125" fill="${fg}"/><path d="M830 400Q780 480 790 570H1050Q1060 480 1010 400Z" fill="${fg}"/><circle cx="920" cy="325" r="80" fill="${accent}"/><path d="M835 335Q800 220 920 190Q1050 215 1010 395L970 350Q980 260 910 250Q850 260 835 335Z" fill="${fg}"/>`;
+  else if (kind === 'construction') art += [0,1,2].map(i => `<rect x="${790+i*80}" y="${300-i*50}" width="70" height="${240+i*50}" fill="${fg}" opacity="${.4+i*.2}"/><path d="M${800+i*80} ${315-i*50}v${200+i*50}" stroke="${accent}" stroke-width="3"/>`).join('');
+  else if (kind === 'cleaning') art += `<circle cx="920" cy="360" r="120" fill="${bg}"/><text x="835" y="415" font-size="180">✦</text><text x="1030" y="255" font-size="65">✧</text>`;
+  else if (kind === 'barber') art += `<defs><pattern id="stripes" width="35" height="35" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="35" height="35" fill="${bg}"/><rect width="17" height="35" fill="${fg}"/></pattern></defs><rect x="855" y="225" width="130" height="290" rx="60" fill="url(#stripes)" stroke="${fg}" stroke-width="6"/><text x="985" y="440" font-size="95">✂</text>`;
+  else if (kind === 'bakery') art += `<ellipse cx="920" cy="450" rx="150" ry="35" fill="${fg}" opacity=".1"/><rect x="795" y="290" width="250" height="150" rx="75" fill="#ba7f45"/>` + [0,1,2,3].map(i => `<path d="M${835+i*55} 320l-20 55" stroke="#f1cd91" stroke-width="14" stroke-linecap="round"/>`).join('');
+  else if (kind === 'restaurant') art += `<circle cx="920" cy="360" r="140" fill="${bg}" stroke="${fg}" stroke-width="2"/><circle cx="920" cy="360" r="115" fill="none" stroke="${fg}" opacity=".3"/><circle cx="920" cy="360" r="80" fill="${accent}" opacity=".6"/><path d="M755 250v220M1080 250v220" stroke="${fg}" stroke-width="9"/>`;
+  else if (kind === 'shop') art += `<path d="M855 260v-30q65-70 130 0v30" fill="none" stroke="${fg}" stroke-width="12"/><rect x="820" y="255" width="205" height="260" rx="40" fill="${fg}"/><rect x="850" y="370" width="145" height="105" rx="15" fill="${accent}"/><path d="M855 300h135" stroke="${accent}" stroke-width="5"/>`;
+  else art += `<circle cx="920" cy="360" r="120" fill="${fg}" opacity=".2"/><text x="815" y="415" font-size="180">↗</text>`;
+  const lines = theme.headline.split('\n');
+  const size = Math.max(...lines.map(line => line.length)) < 17 ? 90 : 75;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800"><title>${escape(theme.name)} website template</title><rect width="1200" height="800" fill="${bg}"/><g fill="${fg}" font-family="Arial,sans-serif"><text x="60" y="70" font-size="27" font-weight="800">${escape(theme.name)}</text><text x="770" y="65" font-size="12">Explore / Our story / Get in touch ↗</text><path d="M60 105H1140" stroke="${fg}" opacity=".2"/><text x="60" y="210" font-size="11" letter-spacing="2">${escape(theme.category.toUpperCase())} / MADE AROUND YOU</text>${lines.map((line,i) => `<text x="55" y="${330+i*105}" font-size="${size}" font-family="Georgia,serif" letter-spacing="-4">${escape(line)}</text>`).join('')}<rect x="60" y="520" width="260" height="50" rx="6" fill="${fg}"/><text x="80" y="550" font-size="12" fill="${bg}">${escape(theme.action)} ↗</text>${art}<path d="M60 660H1140" stroke="${fg}" opacity=".2"/><text x="60" y="715" font-size="28" font-family="Georgia,serif">A little more care in the everyday.</text><text x="60" y="758" font-size="10" opacity=".7">EXPLORE / DISCOVER / CONNECT</text></g></svg>`;
+  fs.writeFileSync(`public/business/${theme.slug}.svg`, svg);
+}
+console.log('Generated 10 business thumbnails and 8 image fallbacks.');

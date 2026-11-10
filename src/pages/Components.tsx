@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { categories, componentRegistry, filterComponents, getCategoryCounts } from "../components-library/registry";
 import PreviewFrame from "../components-library/shared/PreviewFrame";
 import CodePanel from "../components-library/shared/CodePanel";
@@ -42,6 +42,11 @@ export default function Components() {
       </header>
 
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mb-10 grid gap-4 md:grid-cols-3">{[
+          { path: 'backgrounds', title: 'Backgrounds', copy: 'Atmosphere, glowing grids, waves, and particle fields.' },
+          { path: 'text', title: 'Text effects', copy: 'Expressive lettering and animated typography.' },
+          { path: 'cursors', title: 'Cursor effects', copy: 'Interactive trails, halos, and pointer playgrounds.' },
+        ].map(group => <Link key={group.path} to={`/components/${group.path}`} className="rounded-2xl border border-brand-200 bg-brand-50/50 p-6 transition hover:border-brand-400 hover:bg-brand-50"><h2 className="font-display text-xl font-semibold text-brand-950">{group.title} ↗</h2><p className="mt-3 text-sm leading-6 text-slate-600">{group.copy}</p></Link>)}</div>
         <div className="mb-6 flex flex-wrap items-end justify-between gap-5">
           <div className="w-full max-w-md"><label htmlFor={`${id}-search`} className="mb-2 block text-sm font-medium text-brand-950">Find a section</label><input id={`${id}-search`} type="search" value={query} onChange={(event) => updateFilter("q", event.target.value)} placeholder="Search by layout, use, or tag…" className="min-h-11 w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2" /></div>
           <p role="status" className="pb-3 text-sm text-slate-500">{filtered.length} of {componentRegistry.length} components</p>

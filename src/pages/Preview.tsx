@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { useParams, Link } from "react-router-dom";
 import { getDesignComponent } from "../designs";
 
@@ -46,7 +47,7 @@ const Preview = () => {
     );
   }
 
-  return <DesignComponent />;
+  return <Suspense fallback={<p role="status" className="p-8">Opening design?</p>}><DesignComponent /></Suspense>;
 };
 
 export default Preview;

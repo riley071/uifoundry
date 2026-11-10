@@ -1,6 +1,26 @@
+import { newPhotoProfiles, photosFor } from '../designs/photographic/profiles';
+import { businessThemes } from '../designs/business/data';
+import { templateThemes } from '../designs/collection/themes';
 import type { Design } from '../types';
 
 export const designs: Design[] = [
+  ...newPhotoProfiles.map((profile, index) => ({
+    id: `photo-${index + 1}`, title: profile.name, slug: profile.slug, category: profile.category,
+    style: ['Editorial', 'Luxury'], description: profile.description, previewImage: photosFor(profile.slug)[0],
+    isPremium: false, updatedAt: 'New', tags: [profile.category, 'Photographic', 'Interactive'],
+  })),
+  ...businessThemes.map((theme, index) => ({
+    id: `business-${index + 1}`,
+    title: theme.name,
+    slug: theme.slug,
+    category: theme.category,
+    style: ['Editorial', ...(['restaurant','color-studio','construction'].includes(theme.kind) ? ['Bold'] : ['Soft'])],
+    description: theme.description,
+    previewImage: `/business/${theme.slug}.svg`,
+    isPremium: false,
+    updatedAt: 'New',
+    tags: [theme.category, 'Business Collection', 'Interactive', theme.kind],
+  })),
   {
     id: '1',
     title: 'Atlas',
@@ -10,9 +30,9 @@ export const designs: Design[] = [
     description: 'Independent travel routes — journal-led, large type, muted earth palette. Side streets over checklists.',
     previewImage: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80',
     isPremium: true,
-    likes: 318,
-    views: 7200,
-    updatedAt: 'today',
+
+
+    updatedAt: 'Refreshed',
     tags: ['Travel', 'Editorial', 'Itinerary'],
   },
   {
@@ -24,9 +44,9 @@ export const designs: Design[] = [
     description: 'Scandinavian furniture house — stone palette, material honesty, quiet product photography.',
     previewImage: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&q=80',
     isPremium: true,
-    likes: 512,
-    views: 9100,
-    updatedAt: 'today',
+
+
+    updatedAt: 'Refreshed',
     tags: ['Furniture', 'Minimal', 'Materials'],
   },
   {
@@ -38,9 +58,9 @@ export const designs: Design[] = [
     description: 'Private property sales — charcoal canvas, restrained gold line, off-market positioning.',
     previewImage: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
     isPremium: true,
-    likes: 401,
-    views: 8400,
-    updatedAt: 'today',
+
+
+    updatedAt: 'Refreshed',
     tags: ['Real Estate', 'Luxury', 'Private'],
   },
   {
@@ -52,9 +72,9 @@ export const designs: Design[] = [
     description: 'Neighbourhood bakery — cream paper, terracotta accent, serif headlines, daily counter.',
     previewImage: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=80',
     isPremium: false,
-    likes: 267,
-    views: 5600,
-    updatedAt: 'today',
+
+
+    updatedAt: 'Refreshed',
     tags: ['Bakery', 'Food', 'Local'],
   },
   {
@@ -66,9 +86,9 @@ export const designs: Design[] = [
     description: 'Fitment-first auto parts — VIN lookup, dense catalog, electric blue on near-black.',
     previewImage: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&q=80',
     isPremium: false,
-    likes: 289,
-    views: 6800,
-    updatedAt: 'today',
+
+
+    updatedAt: 'Refreshed',
     tags: ['Auto', 'Parts', 'Commerce'],
   },
   {
@@ -80,9 +100,9 @@ export const designs: Design[] = [
     description: 'Layer farm advisory — welfare, biosecurity, audit-ready records. Trust without the template look.',
     previewImage: 'https://images.unsplash.com/photo-1548550023-2bdb3ff3da1d?w=800&q=80',
     isPremium: true,
-    likes: 198,
-    views: 4100,
-    updatedAt: 'today',
+
+
+    updatedAt: 'Refreshed',
     tags: ['Agriculture', 'Services', 'Welfare'],
   },
   {
@@ -94,9 +114,9 @@ export const designs: Design[] = [
     description: 'Private fleet rental — door delivery, app unlock, photographic dark UI, amber accent.',
     previewImage: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&q=80',
     isPremium: true,
-    likes: 412,
-    views: 9800,
-    updatedAt: 'today',
+
+
+    updatedAt: 'Refreshed',
     tags: ['Car Rental', 'Dark', 'Luxury'],
   },
   {
@@ -108,12 +128,26 @@ export const designs: Design[] = [
     description: 'Roofing trade brand — navy field, safety orange, project proof, written guarantees.',
     previewImage: 'https://images.unsplash.com/photo-1632759145351-1d592919fbb1?w=800&q=80',
     isPremium: false,
-    likes: 176,
-    views: 3900,
-    updatedAt: 'today',
+
+
+    updatedAt: 'Refreshed',
     tags: ['Roofing', 'Trade', 'Construction'],
   },
-];
+  ...templateThemes.map((theme, index) => ({
+    id: `creative-${index + 1}`,
+    title: theme.name,
+    slug: theme.slug,
+    category: theme.category,
+    style: ['Editorial', ...(theme.bg.startsWith('#0') || theme.bg.startsWith('#1') ? ['Dark'] : ['Bold'])],
+    description: theme.description,
+    previewImage: `/templates/${theme.slug}.svg`,
+    isPremium: false,
+
+
+    updatedAt: 'New',
+    tags: [theme.category, 'Interactive', 'Motion', 'Creative Collection'],
+  })),
+].map(design => ({ ...design, previewImage: photosFor(design.slug)[0] }));
 
 export const categories = [
   'All',
@@ -123,6 +157,20 @@ export const categories = [
   'E-commerce',
   'Services',
   'Food',
+  'Science',
+  'Entertainment',
+  'Arts & Culture',
+  'Finance',
+  'Lifestyle',
+  'Creative',
+  'Technology',
+  'Wellness',
+  'Education',
+  'Beauty',
+  'Construction',
+  'Cleaning',
+  'Healthcare',
+  'Automotive',
 ];
 
 export const styles = [

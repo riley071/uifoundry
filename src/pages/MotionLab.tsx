@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import type { PointerEvent, ReactNode } from "react";
 import SceneBoundary from "../components/SceneBoundary";
+import { Link } from "react-router-dom";
 import type {
   PlaygroundSettings,
   PlaygroundShape,
@@ -808,6 +809,7 @@ const MotionLab = () => {
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter mb-3">
             Motion Lab
           </h1>
+          <Link to="/motion/studio" className="mb-6 inline-flex rounded-xl border border-lime-300/40 bg-lime-300/10 px-5 py-3 text-sm font-semibold text-lime-200 hover:bg-lime-300/20">New: Motion Studio · 54 live recipes →</Link>
           <p className="text-slate-300 max-w-xl mb-10">
             Animations you can run right here. Reshape the 3D object below, then
             press Play Demo on any card.
